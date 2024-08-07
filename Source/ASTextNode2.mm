@@ -1110,18 +1110,27 @@ static CGRect ASTextNodeAdjustRenderRectForShadowPadding(CGRect rendererRect, UI
   [super touchesEnded:touches withEvent:event];
 
   ASLockScopeSelf(); // Protect usage of _highlight* ivars.
+  BOOL isHandle = false;
   id<ASTextNodeDelegate> delegate = self.delegate;
   if ([self _pendingLinkTap] && [delegate respondsToSelector:@selector(textNode:tappedLinkAttribute:value:atPoint:textRange:)]) {
+    isHandle = true;
     CGPoint point = [[touches anyObject] locationInView:self.view];
     [delegate textNode:(ASTextNode *)self tappedLinkAttribute:_highlightedLinkAttributeName value:_highlightedLinkAttributeValue atPoint:point textRange:_highlightRange];
   }
   
   if ([self _pendingTruncationTap]) {
-    if ([delegate respondsToSelector:@selector(textNodeTappedTruncationToken:)]) {
-      [delegate textNodeTappedTruncationToken:(ASTextNode *)self];
+    isHandle = true;
+    if ([delegate respondsToSelector:@selector(textNodeTappedTruncationToken:atPoint:)]) {
+        CGPoint point = [[touches anyObject] locationInView:self.view];
+        [delegate textNodeTappedTruncationToken:(ASTextNode *)self atPoint: point];
     }
   }
-  
+  if (isHandle == false) {
+    if ([delegate respondsToSelector:@selector(textNodeTappedTruncationToken:atPoint:)]) {
+            [delegate textNodeTappedOther:(ASTextNode *)self];
+    }
+  }
+    
   [self _clearHighlightIfNecessary];
 }
 

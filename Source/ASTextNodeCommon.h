@@ -64,7 +64,8 @@ typedef NS_ENUM(unsigned char, ASTextNodeHighlightStyle) {
 
 //! @abstract Called when the text node's truncation string has been tapped.
 - (void)textNodeTappedTruncationToken:(ASTextNode *)textNode;
-
+- (void)textNodeTappedTruncationToken:(ASTextNode *)textNode atPoint:(CGPoint)point;
+- (void)textNodeTappedOther:(ASTextNode *)textNode;
 /**
  @abstract Indicates to the text node if an attribute should be considered a link.
  @param textNode The text node containing the entity attribute.
